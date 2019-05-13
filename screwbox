@@ -121,18 +121,18 @@ module edge(/* TODO parameters */) {
 }
 
 module screwBox() {
-	// The box
+   // The box
    difference() {
-		translate([0,0,boxHeight/2])
+      translate([0,0,boxHeight/2])
          // Outside
          cube_c(boxLength, boxWidth, boxHeight, boxRadius);
-		translate([0,0,(boxHeight-wallThickness+boxRadius)/2+wallThickness]) 
+      translate([0,0,(boxHeight-wallThickness+boxRadius)/2+wallThickness]) 
          // Inside
          cube_s(boxLength-wallThickness*2,boxWidth-wallThickness*2,boxHeight-wallThickness+boxRadius, boxRadius);
-	}
+   }
    
-	// The dividers
-	for (id=[0:dividerCount]) {
+   // The dividers
+   for (id=[0:dividerCount]) {
       if (id!=0){
          origin=(boxLength-wallThickness)/2;
          offset=(boxLength-wallThickness)/numSections;
@@ -140,7 +140,7 @@ module screwBox() {
             translate([0,0,boxHeight/2])
                cube([wallThickness,boxWidth,boxHeight],center=true);
       }
-	}
+   }
    
    // The labels
    if (isLabel==1){
@@ -154,7 +154,7 @@ module screwBox() {
        }
     }
     
-	// The edge
+   // The edge
    if (isStackable==1){
       translate([0,0,boxHeight])
          edge();
@@ -162,4 +162,3 @@ module screwBox() {
 }
 
 screwBox();
-

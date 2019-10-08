@@ -32,9 +32,9 @@ module round()
 {
     difference()
     {
-		cube([Radius, Radius, Height]);
-		translate([Radius, Radius, 0]) cylinder(h=(Height+1)*2,r=Radius, center=true);
-	}
+      cube([Radius, Radius, Height]);
+      translate([Radius, Radius, -1]) cylinder(h=(Height+2),r=Radius);
+   }
 };
 
 module rounding( stepX, stepY )

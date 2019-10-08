@@ -6,3 +6,4 @@ Have a look at the OpenSCAD Homepage (https://www.openscad.org).
 # Contents
 
 - screwbox - A customizable screw box
+- drawdividers - Customizable draw dividers

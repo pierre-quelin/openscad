@@ -8,10 +8,10 @@
 
 // Inside Box Dimensions
 // Box Length (X)
-Length=247;
+Length=245;
 // Box Width (Y)
-// TODO 132 + 192 = 324 
-Width=192;
+// TODO 135 + 187
+Width=187;
 // Box Height (Z)
 Height=30;
 

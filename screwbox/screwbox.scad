@@ -12,18 +12,24 @@
  * - ...
  */
 
+// Version selection ("standard" or "large")
+boxVersion = "standard"; // ["standard", "large"]
+
+// Fix $fn (number of facets used to generate an arc) value
+$fn=50;
+
 // Outside Box Dimensions
-// Box Length 
-finalBoxLength=60;
-// Box Width
-finalBoxWidth=40;
-// Box Height1
-finalBoxHeight=40;
+// Box Length
+finalBoxLength=70;
+// Box Width (automatic based on boxVersion)
+finalBoxWidth = (boxVersion == "large") ? 120 : 60;
+// Box Height
+finalBoxHeight=50;
 
 // Wall thickness
 wallThickness=1.6; // Good speed
 // Chamfer ?
-boxRadius =4;
+boxRadius=4;
 
 // Number of sections
 numSections=1;
@@ -32,9 +38,9 @@ mergeSections=1;
 
 // With or without edge (0: without 1:with)
 isStackable=1;
-// If needed, adjustement between the top and bottom boxes so that they can be stacked.
+// If needed, adjustment between the top and bottom boxes so that they can be stacked.
 adjustment=0.8;
-// Calculate the box Length (without the edge and the adjustement)
+// Calculate the box Length (without the edge and the adjustment)
 boxLength=finalBoxLength-isStackable*(adjustment+2*wallThickness);
 // Box Width
 boxWidth=finalBoxWidth-isStackable*(adjustment+2*wallThickness);
@@ -49,10 +55,7 @@ sectionWidth=(boxLength - (numSections+1)*wallThickness)/numSections;
 // 1) Label length = 30% * sectionWidth
 // labelLength=0.3*sectionWidth;
 // 2) Label length = constant
-labelLength=20;
-
-// Fix $fn (number of facets used to generate an arc) value
-$fn=50;
+labelLength=25;
 
 // Hidden
 dividerCount=mergeSections?numSections-mergeSections:numSections-1;
@@ -71,17 +74,17 @@ module cube_c(length, width, height, radius){
 module cube_s(length, width, height, radius){
    minkowski() {
       cube( [length- 2*radius, width-2*radius, height-2*radius], center=true );
-      sphere(radius); 
+      sphere(radius);
    }
 }
 
-// Obsolete. Poor finish 
+// Obsolete. Poor finish
 module obsolete_label_box(height, width, length){
    alpha=asin(width/height);
    d=sqrt(pow(height,2)-pow(width,2));
    translate([0,0,-length/2])
       linear_extrude(height=length)
-         polygon(points=[[0,0],[0,height],[-sin(alpha)*d,cos(alpha)*d]], path=[[0,1,2]]);
+         polygon(points=[[0,0],[0,height],[-sin(alpha)*d,cos(alpha)*d]], paths=[[0,1,2]]);
 }
 
 module label_box(height, width, length){
@@ -90,7 +93,7 @@ module label_box(height, width, length){
    translate([0,0,-length/2])
       linear_extrude(height=length)
          // Provisioning of 1mm for the thickness of the real label
-         polygon(points=[[0,height-width-0.8-1],[0,height-1],[-width,height-1],[-width,height-0.8-1]], path=[[0,1,2,3]]);
+         polygon(points=[[0,height-width-0.8-1],[0,height-1],[-width,height-1],[-width,height-0.8-1]], paths=[[0,1,2,3]]);
 }
 
 module edge(/* TODO parameters */) {
@@ -105,16 +108,16 @@ module edge(/* TODO parameters */) {
                cube_c(boxLength+adjustment, boxWidth+adjustment, wallThickness, boxRadius);
          }
          // 45 degrees for edge support
-          translate([0, (boxWidth+wallThickness)/2, 2*wallThickness]) 
+          translate([0, (boxWidth+wallThickness)/2, 2*wallThickness])
             rotate([45,0,0])
                cube([boxLength+2*wallThickness+1, 2*wallThickness, 6*wallThickness], center=true);
-         translate([0,-(boxWidth+wallThickness)/2, 2*wallThickness]) 
+         translate([0,-(boxWidth+wallThickness)/2, 2*wallThickness])
             rotate([-45,0,0])
                cube([boxLength+2*wallThickness+1, 2*wallThickness, 6*wallThickness],center=true);
-         translate([(boxLength+wallThickness)/2, 0, 2*wallThickness]) 
+         translate([(boxLength+wallThickness)/2, 0, 2*wallThickness])
             rotate([0,-45,0])
                cube([2*wallThickness, boxWidth+2*wallThickness+1, 6*wallThickness],center=true);
-         translate([-(boxLength+wallThickness)/2, 0, 2*wallThickness]) 
+         translate([-(boxLength+wallThickness)/2, 0, 2*wallThickness])
             rotate([0,45,0])
                cube([2*wallThickness, boxWidth+2*wallThickness+1, 6*wallThickness],center=true);
       }
@@ -126,11 +129,11 @@ module screwBox() {
       translate([0,0,boxHeight/2])
          // Outside
          cube_c(boxLength, boxWidth, boxHeight, boxRadius);
-      translate([0,0,(boxHeight-wallThickness+boxRadius)/2+wallThickness]) 
+      translate([0,0,(boxHeight-wallThickness+boxRadius)/2+wallThickness])
          // Inside
          cube_s(boxLength-wallThickness*2,boxWidth-wallThickness*2,boxHeight-wallThickness+boxRadius, boxRadius);
    }
-   
+
    // The dividers
    for (id=[0:dividerCount]) {
       if (id!=0){
@@ -141,7 +144,7 @@ module screwBox() {
                cube([wallThickness,boxWidth,boxHeight],center=true);
       }
    }
-   
+
    // The labels
    if (isLabel==1){
       for (id=[0:dividerCount]) {
@@ -153,7 +156,7 @@ module screwBox() {
                      label_box(boxHeight, labelWidth, labelLength);
        }
     }
-    
+
    // The edge
    if (isStackable==1){
       translate([0,0,boxHeight])
